@@ -18,7 +18,7 @@
     'use strict';
     var undefinedType = 'undefined';
     // prevent load again
-    if (typeof G !== undefinedType) {
+    if (typeof define !== undefinedType || typeof require !== undefinedType) {
         return;
     }
     host.G = {};
@@ -55,7 +55,9 @@
         // directory regexp
         jsSuffixReg = /\.js(?:(?:\?|#)[\w\W]*)?$/,
         // validate: .js or .js?v=1 or .js#test
-        jsSuffix = '.js' + config.version;
+        jsSuffix = '.js' + config.version,
+        log,
+        loadScript;
 
     function init() {
         // config.url
@@ -104,7 +106,7 @@
         if ((tmp = httpReg.exec(config.url)) || (tmp = fileReg.exec(config.url))) {
             config.hostUrl = tmp[1];
         } else {
-            G.log('Can\'t get hostUrl!');
+            log('Can\'t get hostUrl!');
         }
 
         // if module name start with 'http://' or 'ftp://'
@@ -138,7 +140,7 @@
             part = old[i];
             if (part === '..') {
                 if (ret.length === 0) {
-                    G.log('Invalid module path:' + path);
+                    log('Invalid module path:' + path);
                 }
                 ret.pop();
             } else if (part !== '.') {
@@ -182,7 +184,8 @@
      * @param {string} url script string
      * @param {function} callback
      */
-    G.loadScript = function(url, callback) {
+
+    loadScript = function(url, callback) {
         var node = doc.createElement('script'),
             head = doc.getElementsByTagName('head')[0];
 
@@ -221,7 +224,8 @@
      * @param {array} deps dependencies
      * @param {function/object} wrap
      */
-    G.def = function(name, deps, wrap) {
+
+    host.define = function(name, deps, wrap) {
         if ((name in module) || (name in loaded)) {
             return;
         }
@@ -338,13 +342,13 @@
             return;
         }
         // start download module
-        G.loadScript(nameToUrl(name), function() {
+        loadScript(nameToUrl(name), function() {
             if (name in module) {
                 clearMod(name, callback);
             } else if (name in loaded) {
                 exeMod(name, callback);
             } else {
-                G.log('Module: ' + name + ' is not defined!');
+                log('Module: ' + name + ' is not defined!');
                 module[name] = notDefined;
                 clearMod(name, callback);
             }
@@ -401,7 +405,7 @@
             delete loaded[name];
             return module[name];
         } else {
-            G.log('Module ' + name + ' is not loaded!');
+            log('Module ' + name + ' is not loaded!');
             return;
         }
     }
@@ -468,7 +472,7 @@
      * @param {function} callback
      * @returns {array}
      */
-    G.req = function req(reqs, callback) {
+    host.require = function req(reqs, callback) {
         if (isPreloaded || !config.preload.length) {
             return require(reqs, callback);
             // return when callback === undefined
@@ -496,12 +500,12 @@
      * Use console.log to print log message, or do nothing~
      */
     if (typeof(console) !== undefinedType && typeof(console.log) !== undefinedType) {
-        G.log = console.log.apply ?
-        function() {
-            console.log.apply(console, arguments);
-        } : console.log; // for IE8 has no apply method on console.log
+        log = console.log.apply ?
+                function() {
+                    console.log.apply(console, arguments);
+                } : console.log; // for IE8 has no apply method on console.log
     } else {
-        G.log = function() {};
+        log = function() {};
     }
 
     init();
