@@ -18,10 +18,9 @@
     'use strict';
     var undefinedType = 'undefined';
     // prevent load again
-    if (typeof define !== undefinedType || typeof require !== undefinedType) {
+    if (typeof host.define !== undefinedType || typeof host.require !== undefinedType) {
         return;
     }
-    host.G = {};
 
     var doc = host.document,
         loading = {},

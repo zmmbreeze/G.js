@@ -10,19 +10,19 @@
     <pre>
 
     // ./lib/a.js
-    G.def('a', function() {
+    define('a', function() {
         return 'a';
     });
 
     // ./index.html
     &lt;script src="./G.js"&gt;&lt;/script&gt;
-    G.req('a', function(a) [
+    require('a', function(a) [
         alert(a === 'a');
     });
     </pre>
     <script src="./G.js"></script>
     <script>
-    G.req('jQuery', function ($) {
+    require('jQuery', function ($) {
         $('#hello').text('Welcome to use G.js!');
     });
     </script>

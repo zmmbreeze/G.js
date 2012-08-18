@@ -10,7 +10,7 @@ Lightweight, about 1.7kb(Minified and Gzipped)
     <h1 id="hello"></h1>
     <script src="./G.js"></script>
     <script>
-    G.req('jQuery', function ($) {
+    require('jQuery', function ($) {
         $('#hello').text('Welcome to use G.js!');
     });
     </script>
@@ -23,22 +23,22 @@ Make sure one javascript file contains only one javascript module!
 ###Define a Module as a Function
 
     // file: lib/a.js
-    G.def('a', function() {
-        return 'a'; // G.req('a') === 'a';
+    define('a', function() {
+        return 'a'; // require('a') === 'a';
     });
 
 ###Define a Module as a simple object
 
     // file: lib/b.js
-    G.def('b', {
+    define('b', {
         name: 'b'
     });
 
 ###Define a Module with Dependencies
 
     // file: lib/c.js
-    G.def('c', ['a', 'b'], function (a, b) {
-        return a + b.name; // G.req('c') === 'ab';
+    define('c', ['a', 'b'], function (a, b) {
+        return a + b.name; // require('c') === 'ab';
     });
 
 ###Require a Module Asynchronously
@@ -46,7 +46,7 @@ Make sure one javascript file contains only one javascript module!
     // file: demo.html
     <script src="./G.js"></script>
     <script>
-    G.req('c', function (c) {
+    require('c', function (c) {
         G.log('c'); // print 'ab' by console.log if exist
     });
     </script>
@@ -61,7 +61,7 @@ Make sure one javascript file contains only one javascript module!
     <script src="lib/c.js"></script>
     <script>
     G.log(
-        G.req('c');// print 'ab' by console.log if exist
+        require('c');// print 'ab' by console.log if exist
     );
     </script>
 
@@ -87,13 +87,13 @@ LibUrl is 'http://guokr.com/lib/'.
 Lib Module name is relative to libUrl.
 ~/guokr/G/lib/a.js is a lib module:
     
-    G.def('a', function() {
+    define('a', function() {
         return 'a';
     });
 
 ~/guokr/G/lib/other/d.js is a lib module:
 
-    G.def('other/d', function() {
+    define('other/d', function() {
         return 'other/d';
     });
 
@@ -102,7 +102,7 @@ BaseUrl is 'http://guokr.com/'.
 Relative Module name is relative to baseUrl.
 ~/guokr/G/c.js is a relative module:
     
-    G.def('./c.js', function() {
+    define('./c.js', function() {
         return './c';
     });
 
@@ -110,13 +110,13 @@ Relative Module name is relative to baseUrl.
 For example:
 
     //filename: ~/guokr/G/lib/c.js
-    G.def('c', function() {
+    define('c', function() {
         return 'c';
     });
 
 
     //filename: ~/guokr/G/lib/b.js
-    G.def('b', ['./c'], function( c ) {
+    define('b', ['./c'], function( c ) {
         // is relative to ~/guokr/G/lib/b.js not baseUrl
         return c === 'c';   // true
     });
@@ -127,7 +127,7 @@ Module name start with '/' or 'http://' or 'https://' or 'file://'.
 if start with '/', for example:
 e.js is a absolute module name
 
-    G.def('/e', {
+    define('/e', {
         name: 'e'
     });
 
@@ -136,14 +136,14 @@ NOTE: Because of hostUrl is different between online(http://) and offline(file:/
 if start with 'http://' or 'https://' or 'file://'.
 e.js for example:
 
-    G.def('http://guokr.com/e.js', function() {
+    define('http://guokr.com/e.js', function() {
         return 'e';
     });
 
 NOTE: Although a module can be named many ways, you can require them by any kind of name;
 for Example:
 
-    G.req('./lib/a.js', function (a) {
+    require('./lib/a.js', function (a) {
         return a === 'a'; // true
     });
 
